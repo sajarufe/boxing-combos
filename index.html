@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {}
+    </script>
+    <style>
+      body {
+        background-image: url("boxing-ring.jpg");
+        background-size: cover;
+      }
+    </style>
+  </head>
+  <body class="flex items-center justify-center h-screen bg-gray-800 bg-opacity-50">
+    <div class="bg-white rounded shadow-lg p-5 m-4 w-full lg:w-3/4 lg:max-w-lg">
+      <div class="mb-4">
+        <h1 class="text-center font-bold text-xl mb-2">Boxing Combo Generator</h1>
+        <div class="text-gray-700 text-center">Generate a boxing combination based on the combo length you set!</div>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="combo-length">Combo Length:</label>
+        <input
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="combo-length" type="number" placeholder="2" min="2" value="2">
+      </div>
+      <div class="mb-4">
+        <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+          onclick="generateCombo()">Generate Combo</button>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="combo">Your Combo:</label>
+        <textarea id="combo"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          rows="4" readonly></textarea>
+      </div>
+    </div>
+
+    <script>
+      const punches = ['1', '2', '3', '4', '5', '6'];
+      const defenses = ['SR', 'SL', 'RR', 'RL', 'L'];
+
+      function generateCombo() {
+        let comboLength = document.getElementById("combo-length").value;
+        let combo = [];
+        let lastMoveIsRight = false;
+
+        for (let i = 0; i < comboLength; i++) {
+          let isPunch = Math.random() < 2 / 3; // 2:1 ratio of punches to defenses
+          if (isPunch) {
+            let punchIndex;
+            do {
+              punchIndex = Math.floor(Math.random() * punches.length);
+            } while ((punchIndex % 2 == 0) == lastMoveIsRight || (combo[combo.length - 1] == '1' && punches[punchIndex] == '1')); // Alternate sides, except jab
+
+            combo.push(punches[punchIndex]);
+            lastMoveIsRight = punchIndex % 2 == 0;
+          } else {
+            let defenseIndex;
+            do {
+              defenseIndex = Math.floor(Math.random() * defenses.length);
+            } while (defenses[defenseIndex] != 'L' && (defenseIndex % 2 == 0) == lastMoveIsRight); // Alternate sides, except lean
+
+            combo.push(defenses[defenseIndex]);
+            lastMoveIsRight = defenseIndex % 2 == 0;
+          }
+        }
+
+        document.getElementById("combo").value = combo.join(" ");
+      }
+    </script>
+  </body>
+</html>
